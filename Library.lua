@@ -643,7 +643,6 @@ function TDS:Loadout(...)
     end
 end
 
--- // load addons
 function TDS:Addons(options)
     if game_state ~= "GAME" then
         return false
@@ -665,7 +664,7 @@ function TDS:Addons(options)
         for _ = 1, retries do
             local ok, code = pcall(http_get, game, url)
             if ok and type(code) == "string" and #code > 0 then
-                local loaded, err = pcall(loadstring(code))
+                local loaded = pcall(loadstring(code))
                 if loaded then
                     local start = os.clock()
                     while os.clock() - start < timeout do
@@ -681,6 +680,13 @@ function TDS:Addons(options)
     end
 
     return false
+end
+
+if game_state == "GAME" then
+    local success = TDS:Addons()
+    if not success then
+        game:GetService("Players").LocalPlayer:Kick("Failed to enter a key in time, or your executor is trash.")
+    end
 end
 
 -- ingame
@@ -985,21 +991,9 @@ local function start_anti_lag()
     end)
 end
 
-local function start_anti_afk()
-    local player = game:GetService("Players").LocalPlayer
-    local vu = game:GetService("VirtualUser")
-
-    player.Idled:Connect(function()
-        vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-        task.wait(1)
-        vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-    end)
-end
-
 start_back_to_lobby()
 start_auto_skip()
 start_auto_pickups()
 start_anti_lag()
-start_anti_afk()
 
 return TDS

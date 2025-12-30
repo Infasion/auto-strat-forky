@@ -64,6 +64,7 @@ local TDS = {
     placed_towers = {},
     active_strat = true
 }
+
 local upgrade_history = {}
 
 -- // shared for addons
@@ -661,6 +662,9 @@ function TDS:Loadout(...)
 end
 
 function TDS:Addons()
+    if game_state ~= "GAME" then
+        return false
+    end
     local url = "https://api.junkie-development.de/api/v1/luascripts/public/57fe397f76043ce06afad24f07528c9f93e97730930242f57134d0b60a2d250b/download"
     local success, code = pcall(game.HttpGet, game, url)
 

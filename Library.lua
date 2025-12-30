@@ -607,7 +607,7 @@ function TDS:Mode(difficulty)
                     })
                 elseif difficulty == "Polluted" then
                     return remote:InvokeServer("Multiplayer", "v2:start", {
-                        mode = "Polluted",
+                        mode = "polluted",
                         count = 1
                     })
                 else

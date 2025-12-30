@@ -738,10 +738,14 @@ function TDS:Place(t_name, px, py, pz)
     if game_state ~= "GAME" then
         return false 
     end
+    
     local existing = {}
     for _, child in ipairs(workspace.Towers:GetChildren()) do
-        if child.Owner.Value == local_player.UserId then
-            existing[child] = true
+        for _, sub_child in ipairs(child:GetChildren()) do
+            if sub_child.Name == "Owner" and sub_child.Value == local_player.UserId then
+                existing[child] = true
+                break
+            end
         end
     end
 
@@ -750,12 +754,15 @@ function TDS:Place(t_name, px, py, pz)
     local new_t
     repeat
         for _, child in ipairs(workspace.Towers:GetChildren()) do
-            if child.Owner.Value == local_player.UserId then
-                if not existing[child] then
-                    new_t = child
-                    break
+            if not existing[child] then
+                for _, sub_child in ipairs(child:GetChildren()) do
+                    if sub_child.Name == "Owner" and sub_child.Value == local_player.UserId then
+                        new_t = child
+                        break
+                    end
                 end
             end
+            if new_t then break end
         end
         task.wait(0.05)
     until new_t

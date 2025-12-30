@@ -305,7 +305,7 @@ local function run_vote_skip()
 end
 
 local function match_ready_up()
-    local player_gui = game:GetService("Players").LocalPlayer:WaitForC hild("PlayerGui")
+    local player_gui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
     
     local ui_overrides = player_gui:WaitForChild("ReactOverridesVote", 30)
     local main_frame = ui_overrides and ui_overrides:WaitForChild("Frame", 30)

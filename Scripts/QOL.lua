@@ -1,5 +1,3 @@
-loadstring(game:HttpGet('https://raw.githubusercontent.com/ColaCydiaRepo/Scripts/main/hello%20world.html'))()
-
 local Towers = {
     "Scout","Sniper","Paintballer","Demoman","Hunter","Soldier","Militant",
     "Freezer","Assassin","Shotgunner","Pyromancer","Ace Pilot","Medic","Farm",

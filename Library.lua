@@ -859,7 +859,6 @@ function TDS:Sell(idx, req_wave)
     end
     local t = self.placed_towers[idx]
     if t and do_sell_tower(t) then
-        table.remove(self.placed_towers, idx)
         return true
     end
     return false

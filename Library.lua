@@ -26,6 +26,8 @@ if not send_request then
 end
 
 -- // services & main refs
+local teleport_service = game:GetService("TeleportService")
+local marketplace_service = game:GetService("MarketplaceService")
 local replicated_storage = game:GetService("ReplicatedStorage")
 local remote_func = replicated_storage:WaitForChild("RemoteFunction")
 local remote_event = replicated_storage:WaitForChild("RemoteEvent")
@@ -62,7 +64,12 @@ local ItemNames = {
 -- // tower management core
 local TDS = {
     placed_towers = {},
-    active_strat = true
+    active_strat = true,
+    matchmaking_map = {
+        ["Hardcore"] = "hardcore",
+        ["Pizza Party"] = "halloween",
+        ["Polluted"] = "polluted"
+    }
 }
 
 local upgrade_history = {}
@@ -372,8 +379,13 @@ local function lobby_ready_up()
     end)
 end
 
-local function select_map_override(map_id)
-    remote_func:InvokeServer("LobbyVoting", "Override", map_id)
+local function select_map_override(map_id, ...)
+    local args = {...}
+
+    if args[#args] == "vip" then
+        remote_func:InvokeServer("LobbyVoting", "Override", map_id)
+    end
+
     task.wait(3)
     cast_map_vote(map_id, Vector3.new(12.59, 10.64, 52.01))
     task.wait(1)
@@ -393,6 +405,18 @@ local function cast_modifier_vote(mods_table)
     pcall(function()
         bulk_modifiers:InvokeServer(selected_mods)
     end)
+end
+
+local function is_map_available(name)
+    for _, g in ipairs(workspace:GetDescendants()) do
+        if g:IsA("SurfaceGui") and g.Name == "MapDisplay" then
+            local t = g:FindFirstChild("Title")
+            if t and t.Text == name then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 -- // timescale logic
@@ -615,28 +639,24 @@ function TDS:Mode(difficulty)
     local res
         repeat
             local ok, result = pcall(function()
-                if difficulty == "Hardcore" then
-                    return remote:InvokeServer("Multiplayer", "v2:start", {
-                        mode = "hardcore",
+                local mode = TDS.matchmaking_map[difficulty]
+
+                local payload
+
+                if mode then
+                    payload = {
+                        mode = mode,
                         count = 1
-                    })
-                elseif difficulty == "Pizza Party" then
-                    return remote:InvokeServer("Multiplayer", "v2:start", {
-                        mode = "halloween",
-                        count = 1
-                    })
-                elseif difficulty == "Polluted" then
-                    return remote:InvokeServer("Multiplayer", "v2:start", {
-                        mode = "polluted",
-                        count = 1
-                    })
+                    }
                 else
-                    return remote:InvokeServer("Multiplayer", "v2:start", {
+                    payload = {
                         difficulty = difficulty,
                         mode = "survival",
                         count = 1
-                    })
+                    }
                 end
+
+                return remote:InvokeServer("Multiplayer", "v2:start", payload)
             end)
 
             if ok and check_res_ok(result) then
@@ -758,10 +778,16 @@ function TDS:GameInfo(name, list)
     if game_state ~= "GAME" then return false end
 
     local vote_gui = player_gui:WaitForChild("ReactGameIntermission", 30)
+    if not (vote_gui and vote_gui.Enabled and vote_gui:WaitForChild("Frame", 5)) then return end
 
-    if vote_gui and vote_gui.Enabled and vote_gui:WaitForChild("Frame", 5) then
-        cast_modifier_vote(list)
+    cast_modifier_vote(list)
+
+    if marketplace_service:UserOwnsGamePassAsync(local_player.UserId, 10518590) then
+        select_map_override(name, "vip")
+    elseif is_map_available(name) then
         select_map_override(name)
+    else
+        teleport_service:Teleport(3260590327, local_player)
     end
 end
 
@@ -792,7 +818,13 @@ function TDS:RestartGame()
     trigger_restart()
 end
 
-function TDS:Place(t_name, px, py, pz)
+function TDS:Place(t_name, px, py, pz, ...)
+    local args = {...}
+    local stack = false
+
+    if args[#args] == "stack" or args[#args] == true then
+        py = 95
+    end
     if game_state ~= "GAME" then
         return false 
     end

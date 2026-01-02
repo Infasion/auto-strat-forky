@@ -117,13 +117,18 @@ TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel.BackgroundTransparency = 1.000
 TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextLabel.BorderSizePixel = 0
-TextLabel.Position = UDim2.new(0.331475258, 0, 0.02972183, 0)
-TextLabel.Size = UDim2.new(0.315564454, 0, 0.110747874, 0)
+TextLabel.Position = UDim2.new(0.5, 0, 0.03, 0)
+TextLabel.AnchorPoint = Vector2.new(0.5, 0)
+TextLabel.Size = UDim2.new(0.6, 0, 0.11, 0)
 TextLabel.Font = Enum.Font.SourceSansSemibold
 TextLabel.Text = "Pure Strategy"
 TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel.TextScaled = true
 TextLabel.TextSize = 14.000
 TextLabel.TextWrapped = true
-TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-TextLabel.TextYAlignment = Enum.TextYAlignment.Top
+TextLabel.TextXAlignment = Enum.TextXAlignment.Center
+TextLabel.TextYAlignment = Enum.TextYAlignment.Center
+
+shared.AutoStratGUI = {
+    Console = Console
+}

@@ -761,7 +761,7 @@ function TDS:Addons()
 
     loadstring(code)()
 
-    while not TDS.Equip do
+    while not TDS.Equip and TDS.MultiMode and TDS.Multiplayer do
         task.wait(0.1)
     end
 

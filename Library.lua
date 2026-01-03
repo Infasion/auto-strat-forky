@@ -1385,6 +1385,19 @@ local function start_auto_dj_booth()
                     "Activate",
                     { Troop = DJ, Name = "Drop The Beat", Data = {} }
                 )
+
+                local hotbar = player_gui.ReactUniversalHotbar.Frame
+                local timescale = hotbar and hotbar:FindFirstChild("timescale")
+                if timescale then
+                    if timescale:FindFirstChild("Lock") then
+                        task.wait(28)
+                    else
+                        task.wait(14)
+                    end
+                else
+                    task.wait(28)
+                end
+            else
                 task.wait(1)
             end
         end

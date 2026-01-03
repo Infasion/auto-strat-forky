@@ -1185,7 +1185,10 @@ local function start_auto_skip()
 end
 
 local function start_claim_rewards()
-    if auto_claim_rewards or not _G.ClaimRewards then return end
+    if auto_claim_rewards or not _G.ClaimRewards or game_state ~= "LOBBY" then 
+        return 
+    end
+    
     auto_claim_rewards = true
 
     local player = game:GetService("Players").LocalPlayer

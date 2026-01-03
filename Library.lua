@@ -1188,27 +1188,22 @@ local function start_claim_rewards()
     if auto_claim_rewards or not _G.ClaimRewards then return end
     auto_claim_rewards = true
 
-    while _G.ClaimRewards and game_state == "LOBBY" do
-        local player = game:GetService("Players").LocalPlayer
-        local network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
+    local player = game:GetService("Players").LocalPlayer
+    local network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
         
-        local tickets = player.SpinTickets.Value
-        if tickets > 0 then
-            for i = 1, tickets do
-                network:WaitForChild("DailySpin"):WaitForChild("RF:RedeemSpin"):InvokeServer()
-                task.wait(0.5)
-            end
-        end
-
-        for i = 1, 6 do
-            local args = { i }
-            network:WaitForChild("PlaytimeRewards"):WaitForChild("RF:ClaimReward"):InvokeServer(unpack(args))
+    local tickets = player.SpinTickets.Value
+    if tickets > 0 then
+        for i = 1, tickets do
+            network:WaitForChild("DailySpin"):WaitForChild("RF:RedeemSpin"):InvokeServer()
             task.wait(0.5)
         end
-
-        task.wait(5) 
     end
 
+    for i = 1, 6 do
+        local args = { i }
+        network:WaitForChild("PlaytimeRewards"):WaitForChild("RF:ClaimReward"):InvokeServer(unpack(args))
+        task.wait(0.5)
+    end
     auto_claim_rewards = false
 end
 

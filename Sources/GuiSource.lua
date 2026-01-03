@@ -20,6 +20,30 @@ main_frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
 main_frame.BorderSizePixel = 0
 main_frame.Active = true
 
+local open_button = Instance.new("TextButton")
+open_button.Name = "OpenButton"
+open_button.Parent = tds_gui
+open_button.Size = UDim2.new(0, 100, 0, 30)
+open_button.Position = UDim2.new(0.5, -50, 0, 10)
+open_button.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
+open_button.Text = "OPEN MENU"
+open_button.TextColor3 = Color3.fromRGB(255, 255, 255)
+open_button.Font = Enum.Font.GothamBold
+open_button.TextSize = 12
+open_button.Visible = false
+Instance.new("UICorner", open_button).CornerRadius = UDim.new(0, 6)
+local open_stroke = Instance.new("UIStroke", open_button)
+open_stroke.Color = Color3.fromRGB(55, 55, 65)
+open_stroke.Thickness = 1
+
+local function toggle_gui()
+    local is_visible = main_frame.Visible
+    main_frame.Visible = not is_visible
+    open_button.Visible = is_visible
+end
+
+open_button.MouseButton1Click:Connect(toggle_gui)
+
 local main_corner = Instance.new("UICorner", main_frame)
 main_corner.CornerRadius = UDim.new(0, 10)
 
@@ -41,36 +65,34 @@ header_mask.Size = UDim2.new(1, 0, 0, 10)
 header_mask.Position = UDim2.new(0, 0, 1, -10)
 header_mask.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
 header_mask.BorderSizePixel = 0
-header_mask.ZIndex = 0
 
 local title_label = Instance.new("TextLabel", header_frame)
 title_label.Size = UDim2.new(1, -50, 1, 0)
 title_label.Position = UDim2.new(0, 15, 0, 0)
-title_label.Text = "PURE STRATEGY"
+title_label.Text = "AUTOSTRAT LOGGER"
 title_label.TextColor3 = Color3.fromRGB(255, 255, 255)
 title_label.BackgroundTransparency = 1
 title_label.Font = Enum.Font.GothamBold
 title_label.TextSize = 15
 title_label.TextXAlignment = Enum.TextXAlignment.Left
 
-local exit_button = Instance.new("TextButton", header_frame)
-exit_button.Size = UDim2.new(0, 24, 0, 24)
-exit_button.Position = UDim2.new(1, -35, 0.5, -12)
-exit_button.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
-exit_button.Text = "×"
-exit_button.TextColor3 = Color3.fromRGB(255, 255, 255)
-exit_button.Font = Enum.Font.GothamBold
-exit_button.TextSize = 18
-exit_button.AutoButtonColor = true
-Instance.new("UICorner", exit_button).CornerRadius = UDim.new(1, 0)
-exit_button.MouseButton1Click:Connect(function() tds_gui:Destroy() end)
+local minimize_button = Instance.new("TextButton", header_frame)
+minimize_button.Size = UDim2.new(0, 24, 0, 24)
+minimize_button.Position = UDim2.new(1, -35, 0.5, -12)
+minimize_button.BackgroundColor3 = Color3.fromRGB(60, 60, 75)
+minimize_button.Text = "-"
+minimize_button.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimize_button.Font = Enum.Font.GothamBold
+minimize_button.TextSize = 18
+minimize_button.AutoButtonColor = true
+Instance.new("UICorner", minimize_button).CornerRadius = UDim.new(1, 0)
+minimize_button.MouseButton1Click:Connect(toggle_gui)
 
 local log_container = Instance.new("Frame", main_frame)
 log_container.Size = UDim2.new(1, -24, 1, -95)
 log_container.Position = UDim2.new(0, 12, 0, 55)
 log_container.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 log_container.BorderSizePixel = 0
-
 Instance.new("UICorner", log_container).CornerRadius = UDim.new(0, 8)
 
 local console_scrolling = Instance.new("ScrollingFrame", log_container)
@@ -111,10 +133,6 @@ clock_label.TextColor3 = Color3.fromRGB(120, 120, 130)
 clock_label.Font = Enum.Font.GothamBold
 clock_label.TextSize = 10
 clock_label.TextXAlignment = Enum.TextXAlignment.Right
-
-local function toggle_gui()
-    main_frame.Visible = not main_frame.Visible
-end
 
 user_input_service.InputBegan:Connect(function(input, processed)
     if processed then return end

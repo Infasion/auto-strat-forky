@@ -849,7 +849,7 @@ function TDS:Addons()
 
     loadstring(code)()
 
-    while not success do
+    while not url.onSuccess do
         task.wait(0.1)
     end
 

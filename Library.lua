@@ -840,16 +840,35 @@ end
 
 function TDS:Addons()
     if game_state ~= "GAME" then return false end
-    local url = "https://api.junkie-development.de/api/v1/luascripts/public/57fe397f76043ce06afad24f07528c9f93e97730930242f57134d0b60a2d250b/download"
-    local success, code = pcall(game.HttpGet, game, url)
 
-    if not success then
+    local url = "https://api.junkie-development.de/api/v1/luascripts/public/57fe397f76043ce06afad24f07528c9f93e97730930242f57134d0b60a2d250b/download"
+    local success, code = pcall(function()
+        return game:HttpGet(url)
+    end)
+
+    if not success or not code then
         return false
     end
 
-    loadstring(code)()
+    -- Reset the shared flag before loading
+    shared.JunkieAddonSuccess = nil
 
-    while not url.onSuccess do
+    local func, err = loadstring(code)
+    if not func then
+        warn("Failed to load addon:", err)
+        return false
+    end
+
+    func()
+
+    -- Wait for the addon to signal success
+    local timeout = 10 -- seconds
+    local startTime = tick()
+    while not shared.JunkieAddonSuccess do
+        if tick() - startTime > timeout then
+            warn("Addon did not signal success in time.")
+            return false
+        end
         task.wait(0.1)
     end
 

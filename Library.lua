@@ -1334,7 +1334,18 @@ local function start_auto_chain()
                 )
 
                 idx += 1
-                task.wait(11)
+
+                local hotbar = player_gui.ReactUniversalHotbar.Frame
+                local timescale = hotbar and hotbar:FindFirstChild("timescale")
+                if timescale then
+                    if timescale:FindFirstChild("Lock") then
+                        task.wait(11)
+                    else
+                        task.wait(5.5)
+                    end
+                else
+                    task.wait(11)
+                end
             else
                 task.wait(1)
             end

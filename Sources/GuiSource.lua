@@ -1,124 +1,162 @@
-local UIS = game:GetService("UserInputService")
-local guiParent = gethui and gethui() or game:GetService("CoreGui")
+local user_input_service = game:GetService("UserInputService")
+local local_player = game.Players.LocalPlayer
+local gui_parent = gethui and gethui() or game:GetService("CoreGui")
 
-local old = guiParent:FindFirstChild("TDSGui")
-if old then old:Destroy() end
+local old_gui = gui_parent:FindFirstChild("TDSGui")
+if old_gui then old_gui:Destroy() end
 
-local TDSGui = Instance.new("ScreenGui")
-TDSGui.Name = "TDSGui"
-TDSGui.Parent = guiParent
-TDSGui.ResetOnSpawn = false
-TDSGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local tds_gui = Instance.new("ScreenGui")
+tds_gui.Name = "TDSGui"
+tds_gui.Parent = gui_parent
+tds_gui.ResetOnSpawn = false
+tds_gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Background
-local bckpattern = Instance.new("ImageLabel")
-bckpattern.Name = "bckpattern"
-bckpattern.Parent = TDSGui
-bckpattern.Active = true
-bckpattern.Draggable = true
-bckpattern.AnchorPoint = Vector2.new(0.5, 0.5)
-bckpattern.Position = UDim2.new(0.5, 0, 0.5, 0)
-bckpattern.Size = UDim2.new(0.5, 0, 0.6, 0)
-bckpattern.Image = "rbxassetid://118045968280960"
-bckpattern.ImageColor3 = Color3.fromRGB(13,13,13)
-bckpattern.ScaleType = Enum.ScaleType.Crop
-Instance.new("UICorner", bckpattern)
-local UIScale = Instance.new("UIScale", bckpattern)
-if not UIS.TouchEnabled then UIScale.Scale = 0.8 end
+local main_frame = Instance.new("Frame")
+main_frame.Name = "MainFrame"
+main_frame.Parent = tds_gui
+main_frame.Size = UDim2.new(0, 380, 0, 320)
+main_frame.Position = UDim2.new(0.5, -190, 0.5, -160)
+main_frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+main_frame.BorderSizePixel = 0
+main_frame.Active = true
 
--- Tab
-local Tab1 = Instance.new("Frame")
-Tab1.Name = "Tab1"
-Tab1.Parent = bckpattern
-Tab1.BackgroundTransparency = 1
-Tab1.Size = UDim2.new(1,0,1,0)
+local main_corner = Instance.new("UICorner", main_frame)
+main_corner.CornerRadius = UDim.new(0, 10)
 
--- Console Frame
-local Consoleframe = Instance.new("Frame")
-Consoleframe.Name = "Consoleframe"
-Consoleframe.Parent = Tab1
-Consoleframe.BackgroundColor3 = Color3.fromRGB(21,21,21)
-Consoleframe.BorderSizePixel = 0
-Consoleframe.Position = UDim2.new(0.045,0,0.17,0)
-Consoleframe.Size = UDim2.new(0.91,0,0.78,0)
+local main_stroke = Instance.new("UIStroke", main_frame)
+main_stroke.Color = Color3.fromRGB(55, 55, 65)
+main_stroke.Thickness = 1.5
+main_stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
--- Shadows
-local shadowHolder = Instance.new("Frame", Consoleframe)
-shadowHolder.AnchorPoint = Vector2.new(0.5,0.5)
-shadowHolder.BackgroundTransparency = 1
-shadowHolder.Position = UDim2.new(0.5,0,0.5,0)
-shadowHolder.Size = UDim2.new(1,0,1,0)
+local header_frame = Instance.new("Frame", main_frame)
+header_frame.Size = UDim2.new(1, 0, 0, 45)
+header_frame.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
+header_frame.BorderSizePixel = 0
 
-local function createShadow(parent)
-	local sh = Instance.new("ImageLabel", parent)
-	sh.AnchorPoint = Vector2.new(0.5,0.5)
-	sh.BackgroundTransparency = 0.99
-	sh.Position = UDim2.new(0.5,0,0.5,0)
-	sh.Size = UDim2.new(1,0,1,0)
-	sh.Image = "rbxassetid://1316045217"
-	sh.ImageTransparency = 0.99
-	sh.ScaleType = Enum.ScaleType.Slice
-	sh.SliceCenter = Rect.new(10,10,118,118)
-	return sh
+local header_corner = Instance.new("UICorner", header_frame)
+header_corner.CornerRadius = UDim.new(0, 10)
+
+local header_mask = Instance.new("Frame", header_frame)
+header_mask.Size = UDim2.new(1, 0, 0, 10)
+header_mask.Position = UDim2.new(0, 0, 1, -10)
+header_mask.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
+header_mask.BorderSizePixel = 0
+header_mask.ZIndex = 0
+
+local title_label = Instance.new("TextLabel", header_frame)
+title_label.Size = UDim2.new(1, -50, 1, 0)
+title_label.Position = UDim2.new(0, 15, 0, 0)
+title_label.Text = "PURE STRATEGY"
+title_label.TextColor3 = Color3.fromRGB(255, 255, 255)
+title_label.BackgroundTransparency = 1
+title_label.Font = Enum.Font.GothamBold
+title_label.TextSize = 15
+title_label.TextXAlignment = Enum.TextXAlignment.Left
+
+local exit_button = Instance.new("TextButton", header_frame)
+exit_button.Size = UDim2.new(0, 24, 0, 24)
+exit_button.Position = UDim2.new(1, -35, 0.5, -12)
+exit_button.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
+exit_button.Text = "×"
+exit_button.TextColor3 = Color3.fromRGB(255, 255, 255)
+exit_button.Font = Enum.Font.GothamBold
+exit_button.TextSize = 18
+exit_button.AutoButtonColor = true
+Instance.new("UICorner", exit_button).CornerRadius = UDim.new(1, 0)
+exit_button.MouseButton1Click:Connect(function() tds_gui:Destroy() end)
+
+local log_container = Instance.new("Frame", main_frame)
+log_container.Size = UDim2.new(1, -24, 1, -95)
+log_container.Position = UDim2.new(0, 12, 0, 55)
+log_container.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+log_container.BorderSizePixel = 0
+
+Instance.new("UICorner", log_container).CornerRadius = UDim.new(0, 8)
+
+local console_scrolling = Instance.new("ScrollingFrame", log_container)
+console_scrolling.Name = "Console"
+console_scrolling.Size = UDim2.new(1, -10, 1, -10)
+console_scrolling.Position = UDim2.new(0, 5, 0, 5)
+console_scrolling.BackgroundTransparency = 1
+console_scrolling.BorderSizePixel = 0
+console_scrolling.ScrollBarThickness = 2
+console_scrolling.ScrollBarImageColor3 = Color3.fromRGB(60, 60, 70)
+console_scrolling.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+local log_layout = Instance.new("UIListLayout", console_scrolling)
+log_layout.Padding = UDim.new(0, 4)
+
+local footer_frame = Instance.new("Frame", main_frame)
+footer_frame.Size = UDim2.new(1, 0, 0, 35)
+footer_frame.Position = UDim2.new(0, 0, 1, -35)
+footer_frame.BackgroundTransparency = 1
+
+local status_text = Instance.new("TextLabel", footer_frame)
+status_text.Size = UDim2.new(0.5, -15, 1, 0)
+status_text.Position = UDim2.new(0, 15, 0, 0)
+status_text.BackgroundTransparency = 1
+status_text.Text = "● <font color='#00ff96'>Idle</font>"
+status_text.TextColor3 = Color3.fromRGB(200, 200, 200)
+status_text.Font = Enum.Font.GothamMedium
+status_text.RichText = true
+status_text.TextSize = 11
+status_text.TextXAlignment = Enum.TextXAlignment.Left
+
+local clock_label = Instance.new("TextLabel", footer_frame)
+clock_label.Size = UDim2.new(0.5, -15, 1, 0)
+clock_label.Position = UDim2.new(0.5, 0, 0, 0)
+clock_label.BackgroundTransparency = 1
+clock_label.Text = "TIME: 00:00:00"
+clock_label.TextColor3 = Color3.fromRGB(120, 120, 130)
+clock_label.Font = Enum.Font.GothamBold
+clock_label.TextSize = 10
+clock_label.TextXAlignment = Enum.TextXAlignment.Right
+
+local function toggle_gui()
+    main_frame.Visible = not main_frame.Visible
 end
 
-local umbraShadow = createShadow(shadowHolder)
-local penumbraShadow = createShadow(shadowHolder)
-local ambientShadow = createShadow(shadowHolder)
-ambientShadow.Visible = false
+user_input_service.InputBegan:Connect(function(input, processed)
+    if processed then return end
+    if input.KeyCode == Enum.KeyCode.Delete or input.KeyCode == Enum.KeyCode.LeftAlt then
+        toggle_gui()
+    end
+end)
 
--- Console
-local Console = Instance.new("ScrollingFrame")
-Console.Name = "Console"
-Console.Parent = Consoleframe
-Console.BackgroundTransparency = 1
-Console.Size = UDim2.new(1,0,1,0)
-Console.ScrollBarThickness = 1
-Console.Active = true
+local is_dragging, drag_input, drag_start, start_pos
+header_frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        is_dragging = true
+        drag_start = input.Position
+        start_pos = main_frame.Position
+    end
+end)
 
-local UIListLayout = Instance.new("UIListLayout", Console)
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+user_input_service.InputChanged:Connect(function(input)
+    if is_dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - drag_start
+        main_frame.Position = UDim2.new(start_pos.X.Scale, start_pos.X.Offset + delta.X, start_pos.Y.Scale, start_pos.Y.Offset + delta.Y)
+    end
+end)
 
--- Title
-local TextLabel = Instance.new("TextLabel")
-TextLabel.Parent = Tab1
-TextLabel.BackgroundTransparency = 1
-TextLabel.Position = UDim2.new(0.5,0,0.03,0)
-TextLabel.AnchorPoint = Vector2.new(0.5,0)
-TextLabel.Size = UDim2.new(0.6,0,0.11,0)
-TextLabel.Font = Enum.Font.SourceSansSemibold
-TextLabel.Text = "Pure Strategy"
-TextLabel.TextColor3 = Color3.new(1,1,1)
-TextLabel.TextScaled = true
+user_input_service.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then is_dragging = false end
+end)
 
--- Toggle Button
-local ToggleButton = Instance.new("TextButton")
-ToggleButton.Parent = TDSGui
-ToggleButton.Size = UDim2.new(0,110,0,32)
-ToggleButton.AnchorPoint = Vector2.new(0.5,0)
-ToggleButton.Position = UDim2.new(0.5, 0, 0, 5)
-ToggleButton.Text = "Toggle GUI"
-ToggleButton.Font = Enum.Font.GothamBold
-ToggleButton.TextSize = 14
-ToggleButton.TextColor3 = Color3.new(1,1,1)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(50,150,255)
-Instance.new("UICorner", ToggleButton)
-
-local guiVisible = true
-local function toggleGUI()
-	guiVisible = not guiVisible
-	bckpattern.Visible = guiVisible
-end
-
-ToggleButton.MouseButton1Click:Connect(toggleGUI)
-UIS.InputBegan:Connect(function(input, gp)
-	if gp then return end
-	if input.KeyCode == Enum.KeyCode.Delete or input.KeyCode == Enum.KeyCode.LeftAlt then
-		toggleGUI()
-	end
+local session_start = tick()
+task.spawn(function()
+    while task.wait(1) do
+        if not tds_gui.Parent then break end
+        local elapsed = tick() - session_start
+        local h, m, s = math.floor(elapsed / 3600), math.floor((elapsed % 3600) / 60), math.floor(elapsed % 60)
+        clock_label.Text = string.format("TIME: %02d:%02d:%02d", h, m, s)
+    end
 end)
 
 shared.AutoStratGUI = {
-	Console = Console,
-	bckpattern = bckpattern
+    Console = console_scrolling,
+    bckpattern = main_frame,
+    Status = function(new_status)
+        status_text.Text = "● <font color='#00ff96'>" .. tostring(new_status) .. "</font>"
+    end
 }

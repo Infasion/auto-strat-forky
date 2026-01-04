@@ -1175,11 +1175,19 @@ local function start_claim_rewards()
     local player = game:GetService("Players").LocalPlayer
     local network = game:GetService("ReplicatedStorage"):WaitForChild("Network")
         
-    local tickets = player.SpinTickets.Value
-    if tickets > 0 then
-        for i = 1, tickets do
-            network:WaitForChild("DailySpin"):WaitForChild("RF:RedeemSpin"):InvokeServer()
-            task.wait(0.5)
+    local spin_tickets = player:WaitForChild("SpinTickets", 15)
+    
+    if spin_tickets and spin_tickets.Value > 0 then
+        local ticket_count = spin_tickets.Value
+        
+        local daily_spin = network:WaitForChild("DailySpin", 5)
+        local redeem_remote = daily_spin and daily_spin:WaitForChild("RF:RedeemSpin", 5)
+    
+        if redeem_remote then
+            for i = 1, ticket_count do
+                redeem_remote:InvokeServer()
+                task.wait(0.5)
+            end
         end
     end
 

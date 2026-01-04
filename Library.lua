@@ -808,26 +808,7 @@ end
 
 function TDS:Loadout(...)
     if game_state ~= "LOBBY" then
-        local towers = {...}
-        local remote = game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction")
-        for _, tower_name in ipairs(towers) do
-            if tower_name and tower_name ~= "" then
-                local success = false
-                repeat
-                    local ok = pcall(function()
-                        remote:InvokeServer("Inventory", "Equip", "tower", tower_name)
-                        log("Equipped tower: " .. tower_name, "green")
-                    end)
-                    if ok then
-                        success = true
-                    else
-                        task.wait(0.2)
-                    end
-                until success
-                task.wait(0.4)
-            end
-        end
-        return true
+        return
     end
 
     local lobby_hud = player_gui:WaitForChild("ReactLobbyHud", 30)

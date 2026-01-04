@@ -806,6 +806,15 @@ function TDS:Mode(difficulty)
     return true
 end
 
+local args = {
+	"Inventory",
+	"Unequip",
+	"tower",
+	""
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunction"):InvokeServer(unpack(args))
+
+
 function TDS:Loadout(...)
     if game_state ~= "LOBBY" then
         return
@@ -825,6 +834,7 @@ function TDS:Loadout(...)
                 local ok = pcall(function()
                     remote:InvokeServer("Inventory", "Equip", "tower", tower_name)
                     log("Equipped tower: " .. tower_name, "green")
+                    task.wait(1)
                 end)
                 if ok then
                     success = true
@@ -835,6 +845,8 @@ function TDS:Loadout(...)
             task.wait(0.4)
         end
     end
+
+    task.wait(2)
 
     return true
 end

@@ -359,7 +359,7 @@ local function handle_post_match()
                     inline = true
                 }
             },
-            footer = { text = "Logged for " .. local_player.Name .. " • TDS AutoStrat" },
+            footer = { text = "Logged for ||" .. local_player.Name .. "|| • TDS AutoStrat" },
             timestamp = DateTime.now():ToIsoDate()
         }}
     }

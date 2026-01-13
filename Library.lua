@@ -1545,6 +1545,10 @@ task.spawn(function()
         task.wait(1)
         lobby_timer = lobby_timer + 1
 
+        if lobby_timer == 20 then
+            log("Potentially stuck, waiting 40 seconds before rejoining.")
+        end
+
         if lobby_timer >= time_limit then
             teleport_service:Teleport(3260590327, local_player)
             break 

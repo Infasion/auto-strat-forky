@@ -841,30 +841,8 @@ function TDS:Loadout(...)
         end
     end
 
-    local function table_contains(t, value)
-        for _, v in ipairs(t) do
-            if v == value then return true end
-        end
-        return false
-    end
-
-    local matches = #towers == #currently_equipped
-    if matches then
-        for _, t in ipairs(towers) do
-            if not table_contains(currently_equipped, t) then
-                matches = false
-                break
-            end
-        end
-    end
-
-    if matches then
-        log("All towers are equipped", "green")
-        return true
-    end
-
     for _, current_tower in ipairs(currently_equipped) do
-        if current_tower ~= "None" and not table_contains(towers, current_tower) then
+        if current_tower ~= "None" then
             local unequip_done = false
             repeat
                 local ok = pcall(function()
@@ -880,7 +858,7 @@ function TDS:Loadout(...)
     task.wait(0.5)
 
     for _, tower_name in ipairs(towers) do
-        if tower_name and tower_name ~= "" and not table_contains(currently_equipped, tower_name) then
+        if tower_name and tower_name ~= "" then
             local equip_success = false
             repeat
                 local ok = pcall(function()

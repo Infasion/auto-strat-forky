@@ -207,6 +207,57 @@ local function check_res_ok(data)
 
     return false
 end
+-- path calc logic (slang)
+local max_path_distance = 300 -- default
+
+local function findPath()
+    local mapFolder = workspace:FindFirstChild("Map")
+    if not mapFolder then return nil end
+    local pathsFolder = mapFolder:FindFirstChild("Paths")
+    if not pathsFolder then return nil end
+    local pathFolder = pathsFolder:GetChildren()[1]
+    if not pathFolder then return nil end
+    
+    local pathNodes = {}
+    for _, node in ipairs(pathFolder:GetChildren()) do
+        if node:IsA("BasePart") then
+            table.insert(pathNodes, node)
+        end
+    end
+    
+    table.sort(pathNodes, function(a, b)
+        local numA = tonumber(a.Name:match("%d+"))
+        local numB = tonumber(b.Name:match("%d+"))
+        if numA and numB then return numA < numB end
+        return a.Name < b.Name
+    end)
+    
+    return pathNodes
+end
+
+local function calculatePathLength(pathNodes)
+    local totalLength = 0
+    for i = 1, #pathNodes - 1 do
+        totalLength = totalLength + (pathNodes[i + 1].Position - pathNodes[i].Position).Magnitude
+    end
+    return totalLength
+end
+
+-- initialize max path distance when game loads
+task.spawn(function()
+    if game_state == "GAME" then
+        local pathNodes = nil
+        while not pathNodes do
+            task.wait(1)
+            pathNodes = findPath()
+            if pathNodes and #pathNodes > 0 then
+                max_path_distance = calculatePathLength(pathNodes)
+                log("Detected max path distance: " .. math.floor(max_path_distance), "green")
+                break
+            end
+        end
+    end
+end)
 
 -- // scrap ui for match data
 local function get_all_rewards()
@@ -1146,6 +1197,10 @@ function TDS:SetOption(idx, name, val, req_wave)
         return do_set_option(t, name, val, req_wave)
     end
     return false
+end
+
+function TDS:GetMaxPathDistance()
+    return max_path_distance
 end
 
 -- // misc utility
